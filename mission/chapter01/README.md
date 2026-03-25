@@ -38,7 +38,7 @@ ERD에디터 사용방법: https://leeeeeyeon-dev.tistory.com/79
 아래는 ERD를 설계하기 전에 관계를 정리한 구조이다.
 
 ![alt text](unnamed-2026-03-17T16_30_05.png)
-![alt text](image-5.png)
+![alt text](image-6.png)
 ```graphql
 type Mission {
   Id: ID!
@@ -121,6 +121,29 @@ type UserMission {
 
 가게가 속한 지역 정보를 저장하는 테이블이다.
 하나의 지역에는 여러 가게가 존재할 수 있다.
+
+## 각 컬럼을 이렇게 둔 이유
+
+Id
+가게를 고유하게 식별하기 위한 기본키야.
+
+Name
+가게 이름을 저장하는 컬럼이야.
+
+Address
+사용자가 어떤 가게인지 구분하려면 주소 정보가 필요해.
+특히 같은 이름의 가게가 여러 군데 있을 수 있으므로 주소는 중요한 정보야.
+
+CreatedAt / UpdatedAt
+가게 정보 생성 및 수정 시점을 관리하기 위해 필요해.
+
+Region
+가게가 어느 지역에 속하는지 나타내는 관계야.
+실제 DB로 만들 때는 region_id 외래키로 들어간다고 생각하면 돼.
+
+MissionList
+한 가게는 여러 개의 미션을 가질 수 있으므로 Store와 Mission은 일대다 관계가 돼.
+그래서 가게 하나에 여러 미션이 연결된다는 걸 표현한 거야.
 
 - Store
 
