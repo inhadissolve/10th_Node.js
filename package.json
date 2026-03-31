@@ -1,0 +1,29 @@
+{
+  "name": "10th_node",
+  "version": "1.0.0",
+  "description": "INHA UMC 10th_Node.js 미션, 키워드 인증 레포지터리입니다!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon --exec node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/inhadissolve/10th_Node.js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/inhadissolve/10th_Node.js/issues"
+  },
+  "homepage": "https://github.com/inhadissolve/10th_Node.js#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
