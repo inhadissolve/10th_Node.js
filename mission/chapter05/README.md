@@ -226,35 +226,103 @@ if (alreadyChallenged) {
 
 ## 6. Controller → Service → Repository → DB 요청 흐름
 
-이번 미션에서 API 요청은 아래 흐름으로 처리되었다.
+이번 미션에서는 모든 API가 공통적으로 아래 흐름으로 처리되도록 구현했다.
 
 ```text
-1. 사용자가 Postman으로 API 요청을 보냄
-2. Express Router가 요청 URL에 맞는 Controller 실행
-3. Controller가 Path Variable과 Request Body 확인
-4. DTO가 요청 데이터를 정리
-5. Service가 실제 비즈니스 로직 처리
-6. Repository가 DB에 SQL 쿼리 실행
-7. DB 처리 결과가 Repository로 반환
-8. Service가 응답 데이터를 정리
-9. Controller가 클라이언트에게 JSON 응답 반환
+Client(Postman)
+→ Express Router
+→ Controller
+→ DTO
+→ Service
+→ Repository
+→ DB
+→ Repository
+→ Service
+→ Controller
+→ Response
+````
+
+---
+
+### 6-1. 특정 지역에 가게 추가하기 API
+
+```text
+POST /api/v1/regions/1/stores 요청
+→ handleCreateStore Controller 실행
+→ regionId와 request body 확인
+→ bodyToStore DTO로 요청 데이터 정리
+→ createStore Service 호출
+→ findRegionById로 지역 존재 여부 확인
+→ addStore로 stores 테이블에 가게 저장
+→ findStoreById로 저장된 가게 조회
+→ responseFromStore로 응답 데이터 정리
+→ JSON 응답 반환
 ```
 
-예를 들어 미션 도전 API는 다음과 같이 동작했다.
+이 API에서는 먼저 `regionId`에 해당하는 지역이 실제로 존재하는지 확인한 뒤, 존재할 경우에만 가게를 추가하도록 처리했다.
+
+---
+
+### 6-2. 가게에 리뷰 추가하기 API
+
+```text
+POST /api/v1/stores/1/reviews 요청
+→ handleCreateReview Controller 실행
+→ storeId와 request body 확인
+→ bodyToReview DTO로 요청 데이터 정리
+→ createReview Service 호출
+→ findStoreById로 가게 존재 여부 확인
+→ rating 값이 1점부터 5점 사이인지 확인
+→ addReview로 reviews 테이블에 리뷰 저장
+→ findReviewById로 저장된 리뷰 조회
+→ responseFromReview로 응답 데이터 정리
+→ JSON 응답 반환
+```
+
+이 API에서는 리뷰를 추가하려는 가게가 존재하는지 먼저 검증했다.
+또한 평점이 잘못된 값으로 들어오는 것을 막기 위해 `rating` 범위도 함께 확인했다.
+
+---
+
+### 6-3. 가게에 미션 추가하기 API
+
+```text
+POST /api/v1/stores/1/missions 요청
+→ handleCreateMission Controller 실행
+→ storeId와 request body 확인
+→ bodyToMission DTO로 요청 데이터 정리
+→ createMission Service 호출
+→ findStoreById로 가게 존재 여부 확인
+→ rewardPoint가 0 이상인지 확인
+→ addMission으로 missions 테이블에 미션 저장
+→ findMissionById로 저장된 미션 조회
+→ responseFromMission으로 응답 데이터 정리
+→ JSON 응답 반환
+```
+
+이 API에서는 미션을 추가하려는 가게가 실제로 존재하는지 확인한 뒤 미션을 저장했다.
+
+---
+
+### 6-4. 미션 도전하기 API
 
 ```text
 POST /api/v1/missions/1/challenge 요청
 → handleChallengeMission Controller 실행
 → missionId와 userId 확인
+→ bodyToMissionChallenge DTO로 요청 데이터 정리
 → challengeMission Service 호출
-→ 사용자 존재 여부 확인
-→ 미션 존재 여부 확인
-→ 이미 도전 중인지 확인
+→ findUserById로 사용자 존재 여부 확인
+→ findMissionById로 미션 존재 여부 확인
+→ findUserMission으로 이미 도전 중인지 확인
 → addUserMission으로 user_missions 테이블에 저장
-→ 저장된 user_mission 조회
+→ findUserMissionById로 저장된 도전 미션 조회
+→ responseFromUserMission으로 응답 데이터 정리
 → JSON 응답 반환
 ```
 
+- 이 API에서는 도전하려는 미션이 존재하는지 확인했고, 사용자가 이미 같은 미션에 도전 중인지도 검증했다.
+이미 도전 중인 경우에는 중복 저장되지 않도록 오류를 반환하게 했다.
 ---
 
 ## 7. 회원가입 API 비밀번호 해싱 추가
